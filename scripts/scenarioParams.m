@@ -54,6 +54,14 @@ LOSS_FRAC_MIN = 0.10;
 LOSS_FRAC_MAX = 0.50;
 P_CATASTROPHIC_KILL = 0.08;
 
+%% Blue force — adaptive sustainment C2
+% Every assessment period, C2 compares exponentially-faded recent losses
+% per route and routes upcoming convoys to the cheaper route. The south
+% penalty expresses the cost of the longer transit in equivalent tons.
+C2_ASSESS_PERIOD_HR   = 24;
+C2_MEMORY_FACTOR      = 0.7;   % per-assessment decay of past losses
+C2_SOUTH_PENALTY_TONS = 5;
+
 %% Monte Carlo control
 % Seeds for the red cells' internal random number generators. Vary these
 % per run to get independent campaign realizations.

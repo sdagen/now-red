@@ -49,11 +49,16 @@ Time base: 1 simulation time unit = 1 hour.
   Monte-Carlo-sweepable (Stateflow `rand` cannot be reseeded from outside).
 - Metrics: cumulative tons delivered/lost, convoys destroyed, FOB stockpile
   (initial + delivered − consumption).
+- Blue C2 routing is adaptive: the `BlueC2` chart sits on the entity path
+  (custom-output-switch pattern) and forwards each convoy north or south.
+  Every `C2_ASSESS_PERIOD_HR` it updates exponentially-faded recent losses
+  per route (`C2_MEMORY_FACTOR`) and picks the cheaper route, with
+  `C2_SOUTH_PENALTY_TONS` expressing the longer southern transit. Routing
+  history is logged as `routeSelected`. In the 30-run Monte Carlo, adaptive
+  routing delivers ~8,276 tons vs ~8,194 for round-robin at equal losses.
 
 ## Extension ideas
 
-- Adaptive blue C2: route selection driven by recent-loss feedback instead of
-  round-robin (`RouteSelect` switch → `From signal port`).
 - Convoy escorts that reduce ambush effectiveness; red cells that adapt posture
   to observed convoy schedule.
 - Stress studies: raise `P_AMBUSH_*`, cut `DISPATCH_PERIOD_HR`, or lower
