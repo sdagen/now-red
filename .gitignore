@@ -1,0 +1,9 @@
+# Derived simulation/codegen artifacts
+work/
+slprj/
+*.slxc
+*.autosave
+*.asv
+
+# MATLAB project derived state
+resources/project/derived/
