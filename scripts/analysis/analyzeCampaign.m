@@ -121,28 +121,35 @@ fprintf('P(FOB goes dry)              : %8.1f%%\n', 100 * mean(results.dryHours 
 end
 
 function plotCampaignResults(results)
-colBlue = [0.12 0.33 0.53];
-colRed = [0.66 0.21 0.13];
-colSand = [0.91 0.88 0.79];
-colGray = [0.74 0.74 0.74];
-colOlive = [0.29 0.36 0.19];
+colBlue = [0.41 0.71 0.98];
+colRed = [0.93 0.44 0.34];
+colSand = [0.24 0.30 0.38];
+colGray = [0.44 0.49 0.57];
+colOlive = [0.29 0.82 0.66];
+figBg = [0.08 0.10 0.13];
+axesBg = [0.10 0.12 0.16];
+textPrimary = [0.92 0.95 0.98];
+textMuted = [0.68 0.74 0.80];
+gridColor = [0.27 0.32 0.39];
 
 fig = figure( ...
     'Name', 'Operation IRON RELAY - campaign results', ...
-    'Color', [0.97 0.96 0.93], ...
+    'Color', figBg, ...
     'Position', [80 80 1180 760]);
 tl = tiledlayout(fig, 3, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
-title(tl, sprintf('Operation IRON RELAY - %d-day contested resupply, %d realizations', ...
+titleHandle = title(tl, sprintf('Operation IRON RELAY - %d-day contested resupply, %d realizations', ...
     round(results.campaignHr / 24), results.nRuns));
+titleHandle.Color = textPrimary;
 
 ax1 = nexttile(tl, [1 2]);
+applyDarkAxesTheme(ax1, axesBg, textPrimary, textMuted, gridColor);
 hold(ax1, 'on');
 stockP10 = prctile(results.stockGrid, 10, 1);
 stockP90 = prctile(results.stockGrid, 90, 1);
 fill(ax1, ...
     [results.tGrid; flipud(results.tGrid)] / 24, ...
     [stockP10'; flipud(stockP90')], ...
-    [0.83 0.87 0.91], ...
+    [0.15 0.30 0.40], ...
     'EdgeColor', 'none', ...
     'FaceAlpha', 0.85);
 plot(ax1, results.tGrid / 24, results.stockGrid', 'Color', colGray, 'LineWidth', 0.5);
@@ -151,49 +158,65 @@ yline(ax1, 0, '--', 'FOB dry', 'Color', colRed, 'LineWidth', 1.1, ...
     'LabelHorizontalAlignment', 'left');
 grid(ax1, 'on');
 ax1.GridAlpha = 0.12;
-ax1.Color = [0.99 0.985 0.97];
 xlabel(ax1, 'Campaign day');
 ylabel(ax1, 'FOB stockpile (tons)');
 title(ax1, 'Stockpile envelope - every run, 10-90% band, median');
 hold(ax1, 'off');
 
 ax2 = nexttile(tl);
+applyDarkAxesTheme(ax2, axesBg, textPrimary, textMuted, gridColor);
 histogram(ax2, results.delivered, ...
-    'FaceColor', colBlue, 'EdgeColor', 'w', 'LineWidth', 1);
+    'FaceColor', colBlue, 'EdgeColor', axesBg, 'LineWidth', 1);
 xline(ax2, results.dispatchedTons, '--', 'Dispatched', ...
     'Color', colOlive, 'LineWidth', 1.1);
 grid(ax2, 'on');
 ax2.GridAlpha = 0.12;
-ax2.Color = [0.99 0.985 0.97];
 xlabel(ax2, 'Tons delivered per campaign');
 ylabel(ax2, 'Realizations');
 title(ax2, 'Delivered tonnage distribution');
 
 ax3 = nexttile(tl);
+applyDarkAxesTheme(ax3, axesBg, textPrimary, textMuted, gridColor);
 dryMask = results.dryHours > 0;
 scatter(ax3, results.delivered(~dryMask), results.lost(~dryMask), ...
     42, colSand, 'filled', 'MarkerEdgeColor', colBlue, 'LineWidth', 0.8);
 hold(ax3, 'on');
 scatter(ax3, results.delivered(dryMask), results.lost(dryMask), ...
-    52, colRed, 'filled', 'MarkerEdgeColor', [0.35 0.08 0.06], 'LineWidth', 0.8);
+    52, colRed, 'filled', 'MarkerEdgeColor', [0.98 0.62 0.56], 'LineWidth', 0.8);
 grid(ax3, 'on');
 ax3.GridAlpha = 0.12;
-ax3.Color = [0.99 0.985 0.97];
 xlabel(ax3, 'Delivered tons');
 ylabel(ax3, 'Lost tons');
 title(ax3, 'Campaign outcomes');
-legend(ax3, {'Sustained FOB', 'FOB went dry'}, 'Location', 'best');
+legendHandle = legend(ax3, {'Sustained FOB', 'FOB went dry'}, 'Location', 'best');
+styleDarkLegend(legendHandle, axesBg, textPrimary);
 hold(ax3, 'off');
 
 ax4 = nexttile(tl);
+applyDarkAxesTheme(ax4, axesBg, textPrimary, textMuted, gridColor);
 histogram(ax4, results.routeNorthSharePct, ...
-    'FaceColor', colOlive, 'EdgeColor', 'w', 'LineWidth', 1);
+    'FaceColor', colOlive, 'EdgeColor', axesBg, 'LineWidth', 1);
 xline(ax4, mean(results.routeNorthSharePct), '--', 'Mean north share', ...
     'Color', colBlue, 'LineWidth', 1.1);
 grid(ax4, 'on');
 ax4.GridAlpha = 0.12;
-ax4.Color = [0.99 0.985 0.97];
 xlabel(ax4, 'Convoys routed north (%)');
 ylabel(ax4, 'Realizations');
 title(ax4, 'Adaptive routing mix');
+end
+
+function applyDarkAxesTheme(ax, axesBg, textPrimary, textMuted, gridColor)
+ax.Color = axesBg;
+ax.XColor = textMuted;
+ax.YColor = textMuted;
+ax.GridColor = gridColor;
+ax.MinorGridColor = gridColor;
+ax.Title.Color = textPrimary;
+ax.XLabel.Color = textMuted;
+ax.YLabel.Color = textMuted;
+end
+
+function styleDarkLegend(legendHandle, axesBg, textPrimary)
+legendHandle.Color = axesBg;
+legendHandle.TextColor = textPrimary;
 end
