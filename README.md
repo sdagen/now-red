@@ -24,6 +24,9 @@ This folder is a MATLAB project (`IronRelay.prj`). Opening the project puts
 | `scripts/scenarioParams.m` | All scenario parameters (run automatically at project startup) |
 | `models/LogisticsMission.slx` | Executable mission model: SimEvents convoy flow + Stateflow red cells |
 | `scripts/runCampaign.m` | Monte Carlo campaign runner: `results = runCampaign(30)` |
+| `scripts/analysis/analyzeCampaign.m` | Shared metric extraction for batch analysis and the mission UI |
+| `scripts/ui/launchMissionDashboard.m` | Opens the interactive mission dashboard |
+| `scripts/ui/MissionDashboardApp.m` | UIFigure-based dashboard for single-run and Monte Carlo visualization |
 | `models/LogisticsArchitecture.slx` | System Composer architecture: BlueForce / RedForce with typed interfaces |
 | `models/LogisticsInterfaces.sldd` | Interface dictionary (SupplyConvoy, ThreatAction, ...) |
 | `scripts/defineArchInterfaces.m` | Rebuilds/assigns the interface dictionary |
@@ -33,6 +36,7 @@ This folder is a MATLAB project (`IronRelay.prj`). Opening the project puts
 
 ```matlab
 openProject('D:\dev\new-red');          % loads params via startup script
+launchMissionDashboard                  % interactive UI / visualization
 out = sim('LogisticsMission');          % single 30-day campaign
 results = runCampaign(30);              % 30-run Monte Carlo + plots
 ```
