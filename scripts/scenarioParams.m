@@ -62,6 +62,12 @@ C2_ASSESS_PERIOD_HR   = 24;
 C2_MEMORY_FACTOR      = 0.7;   % per-assessment decay of past losses
 C2_SOUTH_PENALTY_TONS = 5;
 
+%% External route-plan evaluation model support
+% Route planners outside the Simulink model can override this vector via
+% SimulationInput when simulating LogisticsMissionPlanEval.slx.
+N_CONVOYS_CAMPAIGN = floor(CAMPAIGN_HR / DISPATCH_PERIOD_HR) + 1;
+ROUTE_PLAN_SEQUENCE = ones(N_CONVOYS_CAMPAIGN, 1);
+
 %% Monte Carlo control
 % Seeds for the red cells' internal random number generators. Vary these
 % per run to get independent campaign realizations.

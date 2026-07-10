@@ -23,8 +23,14 @@ This folder is a MATLAB project (`IronRelay.prj`). Opening the project puts
 |------|---------|
 | `scripts/scenarioParams.m` | All scenario parameters (run automatically at project startup) |
 | `models/LogisticsMission.slx` | Executable mission model: SimEvents convoy flow + Stateflow red cells |
+| `models/LogisticsMissionPlanEval.slx` | External-policy evaluation model driven by a route plan from MATLAB |
 | `scripts/runCampaign.m` | Monte Carlo campaign runner: `results = runCampaign(30)` |
 | `scripts/analysis/analyzeCampaign.m` | Shared metric extraction for batch analysis and the mission UI |
+| `scripts/planning/buildRoutePlanSequence.m` | Validates convoy-by-convoy route decisions for external planning |
+| `scripts/planning/defaultMissionPlan.m` | Creates baseline external route plans |
+| `scripts/planning/evaluateMissionPlan.m` | Runs the external-policy model for one candidate plan |
+| `scripts/planning/optimizeMissionPlan.m` | Outer-loop route-plan search over repeated `sim()` calls |
+| `scripts/planning/plotPlanTradeoffs.m` | Visualizes optimizer history and best-plan outcomes |
 | `scripts/ui/launchMissionDashboard.m` | Opens the interactive mission dashboard |
 | `scripts/ui/MissionDashboardApp.m` | UIFigure-based dashboard for single-run and Monte Carlo visualization |
 | `models/LogisticsArchitecture.slx` | System Composer architecture: BlueForce / RedForce with typed interfaces |
@@ -39,6 +45,10 @@ openProject('D:\dev\new-red');          % loads params via startup script
 launchMissionDashboard                  % interactive UI / visualization
 out = sim('LogisticsMission');          % single 30-day campaign
 results = runCampaign(30);              % 30-run Monte Carlo + plots
+plan = defaultMissionPlan("roundrobin");
+eval = evaluateMissionPlan(plan, Runs=3);
+opt = optimizeMissionPlan(20, RunsPerCandidate=2);
+plotPlanTradeoffs(opt)
 ```
 
 Time base: 1 simulation time unit = 1 hour.
@@ -60,6 +70,11 @@ Time base: 1 simulation time unit = 1 hour.
   `C2_SOUTH_PENALTY_TONS` expressing the longer southern transit. Routing
   history is logged as `routeSelected`. In the 30-run Monte Carlo, adaptive
   routing delivers ~8,276 tons vs ~8,194 for round-robin at equal losses.
+- `LogisticsMissionPlanEval.slx` is the outer-loop-planning variant: the
+  route choice is no longer optimized inside the chart. MATLAB injects a
+  `ROUTE_PLAN_SEQUENCE` vector through `SimulationInput`, and planner
+  scripts search over convoy-by-convoy route assignments by repeatedly
+  calling `sim()`.
 
 ## Extension ideas
 
