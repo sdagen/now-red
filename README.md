@@ -31,6 +31,8 @@ This folder is a MATLAB project (`IronRelay.prj`). Opening the project puts
 | `scripts/planning/evaluateMissionPlan.m` | Runs the external-policy model for one candidate plan |
 | `scripts/planning/optimizeMissionPlan.m` | Outer-loop route-plan search over repeated `sim()` calls |
 | `scripts/planning/plotPlanTradeoffs.m` | Visualizes optimizer history and best-plan outcomes |
+| `scripts/ui/launchMissionPlannerDashboard.m` | Opens the outer-loop mission planner dashboard |
+| `scripts/ui/MissionPlannerApp.m` | UIFigure-based planner UI for evaluation and optimization |
 | `scripts/ui/launchMissionDashboard.m` | Opens the interactive mission dashboard |
 | `scripts/ui/MissionDashboardApp.m` | UIFigure-based dashboard for single-run and Monte Carlo visualization |
 | `models/LogisticsArchitecture.slx` | System Composer architecture: BlueForce / RedForce with typed interfaces |
@@ -43,6 +45,7 @@ This folder is a MATLAB project (`IronRelay.prj`). Opening the project puts
 ```matlab
 openProject('D:\dev\new-red');          % loads params via startup script
 launchMissionDashboard                  % interactive UI / visualization
+launchMissionPlannerDashboard           % outer-loop planner UI
 out = sim('LogisticsMission');          % single 30-day campaign
 results = runCampaign(30);              % 30-run Monte Carlo + plots
 plan = defaultMissionPlan("roundrobin");
